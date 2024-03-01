@@ -11,6 +11,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        popupMenuTheme: const PopupMenuThemeData(
+          color: Color.fromARGB(255, 29, 28, 28),
+          textStyle: TextStyle(color: Colors.white),
+        ),
         fontFamily: 'Lato',
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
@@ -19,6 +23,15 @@ class MyApp extends StatelessWidget {
           ),
         ),
         textTheme: const TextTheme(
+          labelMedium: TextStyle(
+            color: Colors.white,
+            fontSize: 17,
+            // fontWeight: FontWeight.bold,
+          ),
+          labelSmall: TextStyle(
+            fontSize: 16,
+            color: Colors.grey,
+          ),
           titleLarge: TextStyle(
             color: Colors.white,
             fontSize: 26,

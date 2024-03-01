@@ -8,13 +8,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-void openSearchBar() {}
-
-void threeDotMenu() {}
-
 class _HomePageState extends State<HomePage> {
   // ! my variables
   dynamic currentDate, currentTime;
+  bool isSearchBarVisible = false;
+  bool isSearchIconVisible = true;
+  final TextEditingController getCityName = TextEditingController();
+
+  // ! border
+  final border = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(50),
+  );
 
   // ! my functions
   void getCurrentDateTime() {
@@ -33,52 +37,123 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 29, 28, 28),
+      // ! appbar
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 29, 28, 28),
         leadingWidth: 300,
-        leading: Expanded(
-          child: Row(
-            children: [
-              const Text(
-                'Updated ',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+        leading: SizedBox(
+          width: 300,
+          child: Visibility(
+            visible: !isSearchBarVisible,
+            child: Row(
+              children: [
+                const Text(
+                  '  Updated ',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              Text(
-                ' $currentDate  $currentTime',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+                Text(
+                  ' $currentDate  $currentTime',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         actions: [
-          const IconButton(
-            onPressed: openSearchBar,
-            icon: Icon(Icons.search, color: Colors.white),
+          // ! Search
+
+          // ! search icon
+          Visibility(
+            visible: isSearchIconVisible,
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  isSearchBarVisible = true;
+                  isSearchIconVisible = false;
+                });
+              },
+              icon: const Icon(Icons.search, color: Colors.white),
+            ),
           ),
-          PopupMenuButton(
+          Visibility(
+            visible: isSearchBarVisible,
+            child: Expanded(
+              // ! search field
+              child: TextField(
+                controller: getCityName,
+                onSubmitted: (value) {},
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Search a City...',
+                  hintStyle: Theme.of(context).textTheme.labelSmall,
+                  filled: true,
+                  fillColor: const Color.fromARGB(255, 29, 28, 28),
+                  focusedBorder: border,
+                  enabledBorder: border,
+                  prefixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isSearchBarVisible = false;
+                        isSearchIconVisible = true;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // ! PopupMenuButton
+
+          Visibility(
+            visible: isSearchIconVisible,
+            child: PopupMenuButton(
               icon: const Icon(
                 Icons.more_vert,
                 color: Colors.white,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
               ),
               itemBuilder: (context) {
                 return [
                   PopupMenuItem(
                     child: Text(
                       'Settings',
-                      style: TextStyle(
-                        color: Colors.black,
-                        backgroundColor: Colors.grey[400],
-                      ),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: Text(
+                      'Help & feedback',
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
                   )
                 ];
-              })
+              },
+              onSelected: (value) {},
+            ),
+          )
         ],
       ),
       body: SafeArea(
