@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_scan/api_key.dart';
 import 'package:weather_scan/custom_divider.dart';
+import 'package:weather_scan/daily_forecast.dart';
+import 'package:weather_scan/hourly_forecast.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   bool isSearchBarVisible = false;
   bool isSearchIconVisible = true;
   final TextEditingController getCityName = TextEditingController();
-  final String currentCityName = 'Rajshahi';
+  final String currentCityName = 'Dhaka';
   final String apiTempUnit = 'metric';
 
   // ! border
@@ -211,8 +213,8 @@ class _HomePageState extends State<HomePage> {
             final currentWindSpeed = currentWeatherData['wind']['speed'];
             final currenPressure = currentWeatherData['main']['pressure'];
             final feelsLike = currentWeatherData['main']['feels_like'];
-            final maxTemp = currentWeatherData['main']['temp_max'].round();
-            final minTemp = currentWeatherData['main']['temp_min'].round();
+            final maxTemp = currentWeatherData['main']['temp_max'];
+            final minTemp = currentWeatherData['main']['temp_min'];
             final sunrise = weatherData['city']['sunrise'];
             final sunset = weatherData['city']['sunset'];
 
@@ -231,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 12),
-                        // ! current temparature
+                        // ! current main temparature
                         Text(
                           '$currentTemp °C',
                           style: const TextStyle(
@@ -271,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        // ! sky description
+                        // ! weather condition description
                         Text(
                           currentSkyDescription.toString().toUpperCase(),
                           style:
@@ -284,11 +286,66 @@ class _HomePageState extends State<HomePage> {
                         // const Divider(),
                         const AddingADivider(),
                         // ! hourly forecast
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 132,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 20,
+                            itemBuilder: (context, index) {
+                              final temp = weatherData['list'][index + 1]
+                                  ['main']['temp'];
+                              final skyCondition = weatherData['list']
+                                      [index + 1]['weather'][0]['main']
+                                  .toString();
+                              final humidity = weatherData['list'][index + 1]
+                                  ['main']['humidity'];
+                              final time = DateTime.parse(
+                                  weatherData['list'][index + 1]['dt_txt']);
 
+                              return HourlyForcast(
+                                time: DateFormat.jz().format(time),
+                                myIcon: skyCondition == 'Clouds'
+                                    ? Icons.cloud_sharp
+                                    : skyCondition == 'Rain'
+                                        ? Icons.cloudy_snowing
+                                        : Icons.sunny,
+                                temperature: temp.toStringAsFixed(0),
+                                humidity: humidity.toString(),
+                              );
+                            },
+                          ),
+                        ),
                         const AddingADivider(),
 
                         // ! daily forecast
+                        SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                            itemCount: 7,
+                            itemBuilder: (context, index) {
+                              final temp = weatherData['list'][index + 1]
+                                  ['main']['temp'];
+                              final skyCondition = weatherData['list']
+                                      [index + 1]['weather'][0]['main']
+                                  .toString();
+                              final humidity = weatherData['list'][index + 1]
+                                  ['main']['humidity'];
+                              final time = DateTime.parse(
+                                  weatherData['list'][index + 1]['dt_txt']);
+                              return DailyForecast(
+                                myIcon: skyCondition == 'Clouds'
+                                    ? Icons.cloud_sharp
+                                    : skyCondition == 'Rain'
+                                        ? Icons.cloudy_snowing
+                                        : Icons.sunny,
+                                minTemp: minTemp.toString(),
+                                maxTemp: maxTemp.toString(),
+                                humidity: humidity.toString(),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),

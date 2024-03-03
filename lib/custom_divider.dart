@@ -8,9 +8,7 @@ class AddingADivider extends StatelessWidget {
     return const Divider(
       thickness: 1,
       color: Color.fromARGB(46, 123, 123, 123),
-      // indent: 19,
-      // endIndent: 40,
-      height: 0,
+      // height: 0,
     );
   }
 }

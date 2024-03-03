@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HourlyForcast extends StatelessWidget {
-  final String time, temperature, humidity;
+  final String time, humidity, temperature;
   final IconData myIcon;
   const HourlyForcast({
     super.key,
@@ -13,23 +13,45 @@ class HourlyForcast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          time,
-          style: TextStyle(color: Colors.grey[700]),
-        ),
-        const SizedBox(height: 20),
-        Icon(myIcon),
-        const SizedBox(height: 20),
-        Text('$temperature°'),
-        Row(
-          children: [
-            const Icon(Icons.water_drop),
-            Text('$humidity%'),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Column(
+        children: [
+          Text(
+            time,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Icon(
+            myIcon,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '$temperature°',
+            style: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          Row(
+            children: [
+              const Icon(
+                Icons.water_drop,
+                color: Colors.white,
+              ),
+              Text(
+                '$humidity%',
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
