@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class WeatherDetails extends StatelessWidget {
   final String title, value;
+  final IconData? icon;
   const WeatherDetails({
     super.key,
     required this.title,
     required this.value,
+    this.icon,
   });
 
   @override
@@ -15,14 +17,15 @@ class WeatherDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
-              ),
+          icon != null
+              ? Icon(icon, size: 25, color: Colors.white)
+              : const SizedBox(height: 15),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
             ),
           ),
           const SizedBox(height: 5),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_scan/settings_page.dart';
 
 class PopUpMenu extends StatelessWidget {
   const PopUpMenu({super.key});
@@ -18,6 +19,13 @@ class PopUpMenu extends StatelessWidget {
       itemBuilder: (context) {
         return [
           PopupMenuItem(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
             child: Text(
               'Settings',
               style: Theme.of(context).textTheme.labelMedium,

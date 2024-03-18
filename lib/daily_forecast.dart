@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DailyForecast extends StatelessWidget {
-  final String minTemp, maxTemp, humidity, iconPath;
+  final double minTemp, maxTemp;
+  final String iconPath;
   const DailyForecast({
     super.key,
     required this.iconPath,
     required this.minTemp,
     required this.maxTemp,
-    required this.humidity,
   });
 
   @override
@@ -28,36 +28,16 @@ class DailyForecast extends StatelessWidget {
         Flexible(
           flex: 2,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.asset(
                 'assets/icons/$iconPath.png',
-                height: 32,
-                width: 50,
-              ),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    WidgetSpan(
-                      child: Image.asset(
-                        'assets/icons/humidity.png',
-                        height: 20,
-                      ),
-                    ),
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: '$humidity%  ',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+                height: 42,
               ),
               Text(
-                '$maxTemp° / $minTemp°',
+                '${maxTemp.toStringAsFixed(0)}° / ${minTemp.toStringAsFixed(0)}°',
                 style: const TextStyle(
-                  fontSize: 17,
+                  fontSize: 18,
                 ),
               ),
             ],

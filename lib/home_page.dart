@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_scan/api_key.dart';
 import 'package:weather_scan/custom_divider.dart';
-import 'package:weather_scan/daily_forecast.dart';
 import 'package:weather_scan/hourly_forecast.dart';
 import 'package:weather_scan/pop_up_menu_button.dart';
 import 'package:weather_scan/utility.dart';
@@ -23,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   bool isSearchBarVisible = false;
   bool isSearchIconVisible = true;
   bool isUpdatedBarVisible = false;
+  bool isNotRefreshUsed = true;
   final TextEditingController getCityName = TextEditingController();
   String currentCityName = 'Rajshahi';
   final String apiTempUnit = 'metric';
@@ -45,13 +45,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void onRefresh() {
+  Future<void> refreshTheData() async {
+    await Future.delayed(
+      const Duration(
+        seconds: 2,
+      ),
+    );
     setState(() {
+      isNotRefreshUsed = false;
       isSearchIconVisible = true;
       isSearchBarVisible = false;
       isUpdatedBarVisible = false;
       getCityName.clear();
-      currentCityName = 'Rajshahi';
+      currentCityName = getCityName.text;
       weather = _getCurrentWeather();
     });
   }
@@ -80,7 +86,7 @@ class _HomePageState extends State<HomePage> {
       });
       return weatherData;
     } catch (err) {
-      throw '$err';
+      throw 'We are facing some trouble!!';
     }
   }
 
@@ -94,10 +100,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 29, 28, 28),
+      backgroundColor: Colors.grey.shade900,
       // ! appbar
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 29, 28, 28),
+        backgroundColor: Colors.grey.shade900,
         leadingWidth: 300,
         leading: SizedBox(
           width: 300,
@@ -108,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                 Visibility(
                   visible: isUpdatedBarVisible,
                   child: Text(
-                    'Updated $currentDate  $currentTime',
+                    '  Updated $currentDate  $currentTime',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -152,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   hintText: 'Search a City...',
                   hintStyle: Theme.of(context).textTheme.labelSmall,
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 29, 28, 28),
+                  fillColor: Colors.grey.shade900,
                   focusedBorder: border,
                   enabledBorder: border,
                   prefixIcon: IconButton(
@@ -186,236 +192,260 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: weather,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Loading Weather Info...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+
+      //! body starts here...
+
+      body: RefreshIndicator(
+        color: Colors.black,
+        onRefresh: refreshTheData,
+        child: FutureBuilder(
+          future: weather,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                isNotRefreshUsed) {
+              return const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Loading Weather Info...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10),
-                CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              ],
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
-          if (snapshot.hasData) {
-            // ! destructuring api data...
-            final weatherData = snapshot.data!;
-            final currentWeatherData = weatherData['list'][0];
-            final currentTemp = currentWeatherData['main']['temp'].round();
-            // final currentSkyMain = currentWeatherData['weather'][0]['main'];
-            final currentSkyDescription =
-                currentWeatherData['weather'][0]['description'];
-            final currentHumidity = currentWeatherData['main']['humidity'];
-            final currentWindSpeed = currentWeatherData['wind']['speed'];
-            final currenPressure = currentWeatherData['main']['pressure'];
-            final feelsLike = currentWeatherData['main']['feels_like'];
-            final maxTemp = currentWeatherData['main']['temp_max'];
-            final minTemp = currentWeatherData['main']['temp_min'];
-            final sunrise = weatherData['city']['sunrise'];
-            final sunset = weatherData['city']['sunset'];
+                  SizedBox(height: 10),
+                  CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ],
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !isNotRefreshUsed) {
+              return LinearProgressIndicator(
+                color: Colors.grey.shade800,
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            }
+            if (snapshot.hasData) {
+              // ! destructuring api data...
+              final weatherData = snapshot.data!;
+              final currentWeatherData = weatherData['list'][0];
+              final currentTemp = currentWeatherData['main']['temp'].round();
+              final currentSkyDescription =
+                  currentWeatherData['weather'][0]['description'];
+              final currentHumidity = currentWeatherData['main']['humidity'];
+              final currentWindSpeed = currentWeatherData['wind']['speed'];
+              final currenPressure = currentWeatherData['main']['pressure'];
+              final feelsLike = currentWeatherData['main']['feels_like'];
+              final maxTemp = currentWeatherData['main']['temp_max'];
+              final minTemp = currentWeatherData['main']['temp_min'];
+              final sunrise = weatherData['city']['sunrise'];
+              final sunset = weatherData['city']['sunset'];
+              final visibility = weatherData['list'][0]['visibility'];
 
-            return SingleChildScrollView(
-              child: SafeArea(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // ! city name
-                        Text(
-                          currentCityName.toUpperCase(),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 12),
-                        // ! current main temparature
-                        Text(
-                          '$currentTemp °C',
-                          style: const TextStyle(
-                            fontSize: 50,
+              return SingleChildScrollView(
+                child: SafeArea(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // ! city name
+                          Text(
+                            currentCityName.toUpperCase(),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                        ),
-                        // ! maximum/minimum temparature
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const WidgetSpan(
-                                child: Icon(Icons.keyboard_double_arrow_up,
-                                    size: 20, color: Colors.white),
-                              ),
-                              TextSpan(
-                                text: '$maxTemp°',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const TextSpan(text: ' '),
-                              const WidgetSpan(
-                                child: Icon(
-                                  Icons.keyboard_double_arrow_down,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '$minTemp°',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        // ! weather condition description
-                        Text(
-                          currentSkyDescription.toString().toUpperCase(),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    letterSpacing: 6,
-                                    fontSize: 23,
-                                  ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // const Divider(),
-                        const AddingADivider(),
-                        // ! hourly forecast
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          height: 132,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 20,
-                            itemBuilder: (context, index) {
-                              final temp = weatherData['list'][index + 1]
-                                  ['main']['temp'];
-                              final skyCondition = weatherData['list']
-                                      [index + 1]['weather'][0]['description']
-                                  .toString();
-                              print(skyCondition);
-                              final humidity = weatherData['list'][index + 1]
-                                  ['main']['humidity'];
-                              final time = DateTime.parse(
-                                  weatherData['list'][index + 1]['dt_txt']);
-
-                              return HourlyForcast(
-                                time: DateFormat.jz().format(time),
-                                iconPath: provideIconPath(skyCondition),
-                                temperature: temp.toStringAsFixed(0),
-                                humidity: humidity.toString(),
-                              );
-                            },
-                          ),
-                        ),
-                        const AddingADivider(),
-
-                        // ! daily forecast
-                        SizedBox(
-                          height: 315,
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 7,
-                            itemBuilder: (context, index) {
-                              final skyCondition = weatherData['list']
-                                      [index + 1]['weather'][0]['description']
-                                  .toString();
-                              print(skyCondition);
-
-                              final humidity = weatherData['list'][index + 1]
-                                  ['main']['humidity'];
-                              return DailyForecast(
-                                iconPath: provideIconPath(skyCondition),
-                                minTemp: minTemp.toString(),
-                                maxTemp: maxTemp.toString(),
-                                humidity: humidity.toString(),
-                              );
-                            },
-                          ),
-                        ),
-
-                        const AddingADivider(),
-
-                        // ! Weather Details Grid view
-
-                        SizedBox(
-                          height: 345,
-                          child: GridView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 0,
-                              mainAxisSpacing: 0,
+                          const SizedBox(height: 12),
+                          // ! current main temparature
+                          Text(
+                            '$currentTemp °C',
+                            style: const TextStyle(
+                              fontSize: 50,
                             ),
-                            children: [
-                              WeatherDetails(
-                                title: 'Feels Like',
-                                value: '$feelsLike°',
-                              ),
-                              WeatherDetails(
-                                title: 'Humidity',
-                                value: '$currentHumidity%',
-                              ),
-                              WeatherDetails(
-                                title: 'Wind Speed',
-                                value: '$currentWindSpeed Km/h',
-                              ),
-                              const WeatherDetails(
-                                title: 'Clouds',
-                                value: '2%',
-                              ),
-                              const WeatherDetails(
-                                title: 'UV index',
-                                value: '9.67',
-                              ),
-                              const WeatherDetails(
-                                title: 'Rain Chances',
-                                value: '0%',
-                              ),
-                              WeatherDetails(
-                                title: 'Sunrise',
-                                value: getRealTimeSunriseSunset(sunrise),
-                              ),
-                              WeatherDetails(
-                                title: 'Sunset',
-                                value: getRealTimeSunriseSunset(sunset),
-                              ),
-                              WeatherDetails(
-                                title: 'Pressure',
-                                value: '$currenPressure mbar',
-                              ),
-                            ],
                           ),
-                        ),
-                        const AddingADivider(),
-                      ],
+                          // ! maximum/minimum temparature
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                const WidgetSpan(
+                                  child: Icon(Icons.keyboard_double_arrow_up,
+                                      size: 20, color: Colors.white),
+                                ),
+                                TextSpan(
+                                  text: '$maxTemp°',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const TextSpan(text: ' '),
+                                const WidgetSpan(
+                                  child: Icon(
+                                    Icons.keyboard_double_arrow_down,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '$minTemp°',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // ! weather condition description
+                          Text(
+                            currentSkyDescription.toString().toUpperCase(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  letterSpacing: 6,
+                                  fontSize: 23,
+                                ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          const AddingADivider(),
+                          // ! hourly forecast
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 145,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 20,
+                              itemBuilder: (context, index) {
+                                final temp = weatherData['list'][index + 1]
+                                    ['main']['temp'];
+                                final skyCondition = weatherData['list']
+                                        [index + 1]['weather'][0]['main']
+                                    .toString();
+                                final humidity = weatherData['list'][index + 1]
+                                    ['main']['humidity'];
+                                final time = DateTime.parse(
+                                  weatherData['list'][index + 1]['dt_txt'],
+                                );
+
+                                return HourlyForcast(
+                                  time: DateFormat.jz().format(time),
+                                  iconPath: provideIconPath(skyCondition),
+                                  temperature: temp.toStringAsFixed(0),
+                                  humidity: humidity.toString(),
+                                );
+                              },
+                            ),
+                          ),
+                          const AddingADivider(),
+
+                          // ! daily forecast
+                          // SizedBox(
+                          //   height: 305,
+                          //   child: ListView.builder(
+                          //     physics: const NeverScrollableScrollPhysics(),
+                          //     itemCount: 7,
+                          //     itemBuilder: (context, index) {
+                          //       final skyCondition = weatherData['list']
+                          //               [index + 1]['weather'][0]['main']
+                          //           .toString();
+                          //       final minTemp = weatherData['list'][index + 1]
+                          //           ['main']['temp_min'];
+                          //       final maxTemp = weatherData['list'][index + 1]
+                          //           ['main']['temp_max'];
+                          //       return DailyForecast(
+                          //         iconPath: provideIconPath(skyCondition),
+                          //         minTemp: minTemp,
+                          //         maxTemp: maxTemp,
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
+
+                          // const AddingADivider(),
+
+                          // ! Weather Details Grid view
+
+                          SizedBox(
+                            height: 345,
+                            child: GridView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 0,
+                                mainAxisSpacing: 0,
+                                // childAspectRatio: 16 / 9,
+                              ),
+                              children: [
+                                WeatherDetails(
+                                  icon: Icons.thermostat,
+                                  title: 'Feels Like',
+                                  value: '$feelsLike°',
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.water_drop_outlined,
+                                  title: 'Humidity',
+                                  value: '$currentHumidity%',
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.air_outlined,
+                                  title: 'Wind Speed',
+                                  value: '$currentWindSpeed Km/h',
+                                ),
+                                const WeatherDetails(
+                                  icon: Icons.cloud,
+                                  title: 'Clouds',
+                                  value: '2%',
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.visibility_outlined,
+                                  title: 'Visibility',
+                                  value: '${((visibility as int) / 1000)} Km',
+                                ),
+                                const WeatherDetails(
+                                  icon: Icons.cloudy_snowing,
+                                  title: 'Rain Chances',
+                                  value: '0%',
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.sunny,
+                                  title: 'Sunrise',
+                                  value: getRealTimeSunriseSunset(sunrise),
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.nightlight_outlined,
+                                  title: 'Sunset',
+                                  value: getRealTimeSunriseSunset(sunset),
+                                ),
+                                WeatherDetails(
+                                  icon: Icons.wind_power,
+                                  title: 'Pressure',
+                                  value: '$currenPressure mbar',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const AddingADivider(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }
-          return const Text('');
-        },
+              );
+            }
+            return const Text('');
+          },
+        ),
       ),
     );
   }

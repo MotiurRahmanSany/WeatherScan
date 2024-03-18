@@ -26,8 +26,7 @@ class HourlyForcast extends StatelessWidget {
           const SizedBox(height: 10),
           Image.asset(
             'assets/icons/$iconPath.png',
-            height: 32,
-            width: 50,
+            height: 35,
           ),
           const SizedBox(height: 10),
           Text(
@@ -55,3 +54,4 @@ class HourlyForcast extends StatelessWidget {
     );
   }
 }
+  

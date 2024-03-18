@@ -12,24 +12,18 @@ extension CapitalizeFirstLetter on String {
 
 String provideIconPath(String allWeatherConditions) {
   String iconPath = '';
-  switch (allWeatherConditions.toString().toLowerCase()) {
-    case 'light rain':
+  switch (allWeatherConditions.toString()) {
+    case 'Rain':
       iconPath = 'shower_rain';
-    case 'broken clouds':
+    case 'Clouds':
       iconPath = 'broken_clouds';
-    case 'few clouds':
-      iconPath = 'few_clouds';
-    case 'mist':
+    case 'Mist':
       iconPath = 'mist';
-    case 'rain':
-      iconPath = 'rain';
-    case 'scattered clouds':
-      iconPath = 'scattered_clouds';
-    case 'snow':
+    case 'Snow':
       iconPath = 'snow';
-    case 'thunderstorm':
+    case 'Thunderstorm':
       iconPath = 'thunderstorm';
-    case 'clear sky':
+    case 'Clear':
       iconPath = 'clear_sky';
   }
   return iconPath;
