@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:weather_scan/api_key.dart';
-import 'package:weather_scan/custom_divider.dart';
-import 'package:weather_scan/hourly_forecast.dart';
-import 'package:weather_scan/pop_up_menu_button.dart';
-import 'package:weather_scan/utility.dart';
-import 'package:weather_scan/weather_details.dart';
+import 'package:weather_scan/utilities/api_key.dart';
+import 'package:weather_scan/widgets/custom_divider.dart';
+import 'package:weather_scan/widgets/hourly_forecast.dart';
+import 'package:weather_scan/widgets/pop_up_menu_button.dart';
+import 'package:weather_scan/utilities/utility.dart';
+import 'package:weather_scan/widgets/weather_details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

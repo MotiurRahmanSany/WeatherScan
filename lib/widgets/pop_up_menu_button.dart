@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_scan/settings_page.dart';
+import 'package:weather_scan/pages/settings_page.dart';
 
 class PopUpMenu extends StatelessWidget {
   const PopUpMenu({super.key});
