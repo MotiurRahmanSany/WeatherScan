@@ -277,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                             TextSpan(
                               children: [
                                 const WidgetSpan(
-                                  child: Icon(Icons.keyboard_double_arrow_up,
+                                  child: Icon(Icons.keyboard_arrow_up,
                                       size: 20, color: Colors.white),
                                 ),
                                 TextSpan(
@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                                 const TextSpan(text: ' '),
                                 const WidgetSpan(
                                   child: Icon(
-                                    Icons.keyboard_double_arrow_down,
+                                    Icons.keyboard_arrow_down,
                                     color: Colors.white,
                                     size: 20,
                                   ),

@@ -7,7 +7,7 @@ class WeatherDetails extends StatelessWidget {
     super.key,
     required this.title,
     required this.value,
-    this.icon,
+    required this.icon,
   });
 
   @override
@@ -17,9 +17,7 @@ class WeatherDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon != null
-              ? Icon(icon, size: 25, color: Colors.white)
-              : const SizedBox(height: 15),
+          Icon(icon, size: 25, color: Colors.white),
           Text(
             title,
             textAlign: TextAlign.center,
