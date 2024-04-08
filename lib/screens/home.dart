@@ -245,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   currentWeatherData['weather'][0]['description'];
               final currentHumidity = currentWeatherData['main']['humidity'];
               final currentWindSpeed = currentWeatherData['wind']['speed'];
-              final currenPressure = currentWeatherData['main']['pressure'];
+              final currentPressure = currentWeatherData['main']['pressure'];
               final feelsLike = currentWeatherData['main']['feels_like'];
               final maxTemp = currentWeatherData['main']['temp_max'];
               final minTemp = currentWeatherData['main']['temp_min'];
@@ -387,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisCount: 3,
                                 crossAxisSpacing: 0,
                                 mainAxisSpacing: 0,
-                                // childAspectRatio: 16 / 9,
+                                childAspectRatio: 16 / 9,
                               ),
                               children: [
                                 WeatherDetails(
@@ -433,7 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 WeatherDetails(
                                   icon: Icons.wind_power,
                                   title: 'Pressure',
-                                  value: '$currenPressure mbar',
+                                  value: '$currentPressure mbar',
                                 ),
                               ],
                             ),
