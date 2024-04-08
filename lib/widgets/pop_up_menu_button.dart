@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_scan/pages/settings_page.dart';
+import 'package:weather_scan/screens/settings.dart';
 
 class PopUpMenu extends StatelessWidget {
   const PopUpMenu({super.key});
@@ -22,7 +22,7 @@ class PopUpMenu extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
+                  builder: (context) => const SettingsScreen(),
                 ),
               );
             },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_scan/pages/home_page.dart';
+import 'package:weather_scan/screens/home.dart';
 
 void main() => runApp(const MyApp());
 
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           
         ),
       ),
-      home: const HomePage(),
+      home: const HomeScreen(),
     );
   }
 }

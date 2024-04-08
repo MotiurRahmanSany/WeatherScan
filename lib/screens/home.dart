@@ -4,19 +4,20 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_scan/utilities/api_key.dart';
 import 'package:weather_scan/widgets/custom_divider.dart';
+import 'package:weather_scan/widgets/daily_forecast.dart';
 import 'package:weather_scan/widgets/hourly_forecast.dart';
 import 'package:weather_scan/widgets/pop_up_menu_button.dart';
 import 'package:weather_scan/utilities/utility.dart';
 import 'package:weather_scan/widgets/weather_details.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   // ! my variables
   dynamic currentDate, currentTime;
   bool isSearchBarVisible = false;
@@ -33,6 +34,8 @@ class _HomePageState extends State<HomePage> {
   );
 
   // ! my functions
+
+  void _getCurrentLocation() {}
 
   void _fetchWeatherData() {
     setState(() {
@@ -349,29 +352,29 @@ class _HomePageState extends State<HomePage> {
                           const AddingADivider(),
 
                           // ! daily forecast
-                          // SizedBox(
-                          //   height: 305,
-                          //   child: ListView.builder(
-                          //     physics: const NeverScrollableScrollPhysics(),
-                          //     itemCount: 7,
-                          //     itemBuilder: (context, index) {
-                          //       final skyCondition = weatherData['list']
-                          //               [index + 1]['weather'][0]['main']
-                          //           .toString();
-                          //       final minTemp = weatherData['list'][index + 1]
-                          //           ['main']['temp_min'];
-                          //       final maxTemp = weatherData['list'][index + 1]
-                          //           ['main']['temp_max'];
-                          //       return DailyForecast(
-                          //         iconPath: provideIconPath(skyCondition),
-                          //         minTemp: minTemp,
-                          //         maxTemp: maxTemp,
-                          //       );
-                          //     },
-                          //   ),
-                          // ),
+                          SizedBox(
+                            height: 305,
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: 7,
+                              itemBuilder: (context, index) {
+                                final skyCondition = weatherData['list']
+                                        [index + 1]['weather'][0]['main']
+                                    .toString();
+                                final minTemp = weatherData['list'][index + 1]
+                                    ['main']['temp_min'];
+                                final maxTemp = weatherData['list'][index + 1]
+                                    ['main']['temp_max'];
+                                return DailyForecast(
+                                  iconPath: provideIconPath(skyCondition),
+                                  minTemp: minTemp,
+                                  maxTemp: maxTemp,
+                                );
+                              },
+                            ),
+                          ),
 
-                          // const AddingADivider(),
+                          const AddingADivider(),
 
                           // ! Weather Details Grid view
 
@@ -446,6 +449,11 @@ class _HomePageState extends State<HomePage> {
             return const Text('');
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getCurrentLocation,
+        backgroundColor: Colors.white,
+        child: const Icon(Icons.location_on),
       ),
     );
   }

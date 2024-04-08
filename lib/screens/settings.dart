@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:weather_scan/widgets/about_weather_scan.dart';
 import 'package:weather_scan/widgets/custom_divider.dart';
 import 'package:weather_scan/widgets/settings_list_tile.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,21 +85,9 @@ class _SettingsPageState extends State<SettingsPage> {
               'About',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            GestureDetector(
-              onTap: () => showDialog(
-                title: Image.asset('assets/icons/open_weather_logo.png'),
-                content: const Text(
-                  '''WeatherScan receives data from OpenWeatherMap's free service,
-                  which is limited to only 1000 calls per day. You could receive 
-                  your own 1000 calls by registering your API key for free here. 
-                  Otherwise calls are shared between all WeatherScan 
-                  users who use the default API key.''',
-                ),
-              ),
-              child: const SettingTile(
-                title: 'About WeatherScan',
-                icon: Icons.info_outline,
-              ),
+            const SettingTile(
+              title: 'About WeatherScan',
+              icon: Icons.info_outline,
             )
           ],
         ),
